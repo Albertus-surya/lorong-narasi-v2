@@ -33,6 +33,10 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+img { max-width: 100%; height: auto; }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
 body {
   font-family: var(--font-sans);
   background: var(--cream);
@@ -67,23 +71,26 @@ a:hover { color: var(--gold-dark); }
 }
 
 .navbar-right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  display: flex; align-items: center; justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 0.75rem;
+  row-gap: 0.5rem;
 }
 
 .logo-circle {
-  width: 40px;
-  height: 40px;
+  width: 40px; height: 40px; min-width: 40px;
   border-radius: 50%;
   background: var(--gold);
   color: var(--navy);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.logo-circle[style*="background-image"] {
+  background-color: var(--pure-white);
+  background-size: 75% !important;
+  background-repeat: no-repeat !important;
 }
 
 .brand-text {
@@ -96,11 +103,13 @@ a:hover { color: var(--gold-dark); }
 }
 
 .navbar-extra-logo {
-  width: 36px;
-  height: 36px;
+  width: 36px; height: 36px; min-width: 36px;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 4px;
   background: var(--pure-white);
+  flex-shrink: 0;
+  display: block;
 }
 
 .navbar-actions {
@@ -194,8 +203,10 @@ a:hover { color: var(--gold-dark); }
   border: 1px solid var(--gray-200);
   border-radius: 8px;
   background: var(--white);
+  color: var(--gray-800);   /* <- baris baru, ini fix utamanya */
   cursor: pointer;
   font-size: 0.9rem;
+  font-family: inherit;
 }
 
 [data-theme="dark"] .theme-icon-light { display: none; }
@@ -637,12 +648,14 @@ a:hover { color: var(--gold-dark); }
 }
 
 .partner-logo {
-  width: 50px;
-  height: 50px;
+  width: 50px; height: 50px; min-width: 50px;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 5px;
   opacity: 0.85;
   background: var(--pure-white);
+  flex-shrink: 0;
+  display: block;
 }
 
 .footer-copy { font-size: 0.8rem; text-align: center; }
@@ -720,8 +733,8 @@ a:hover { color: var(--gold-dark); }
 @media (max-width: 480px) {
   .navbar { padding: 0.6rem 0.75rem; }
   .brand-text { font-size: 1.1rem; }
-  .logo-circle { width: 34px; height: 34px; font-size: 0.75rem; }
-  .navbar-extra-logo { width: 28px; height: 28px; }
+  .logo-circle { width: 34px; height: 34px; min-width: 34px; font-size: 0.75rem; }
+  .navbar-extra-logo { width: 28px; height: 28px; min-width: 28px; }
   .navbar-right { gap: 0.4rem; }
   .nav-pill { padding: 0.35rem 0.8rem; font-size: 0.8rem; }
   .main-content { padding: 1rem; }
@@ -735,7 +748,7 @@ a:hover { color: var(--gold-dark); }
   .team-photo { width: 110px; height: 110px; }
   .team-info { padding: 1rem; }
   .footer-top { gap: 1.5rem; padding: 0 1rem; }
-  .partner-logo { width: 40px; height: 40px; }
+  .partner-logo { width: 40px; height: 40px; min-width: 40px; }
 }
 
 /* Vertical Story Reader Styles */
