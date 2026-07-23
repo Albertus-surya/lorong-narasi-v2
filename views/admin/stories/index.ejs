@@ -1,0 +1,110 @@
+<div class="admin-page-header">
+  <h2>Daftar Cerita</h2>
+  <a href="/admin/stories/create" class="btn btn-accent">+ Tambah Cerita</a>
+</div>
+
+<div class="table-responsive">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Judul</th>
+        <th>Kategori</th>
+        <% if (isSuperAdmin) { %><th>Admin</th><% } %>
+        <th>Status</th>
+        <th>Diperbarui</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (stories.length === 0) { %>
+        <tr><td colspan="6" class="text-center">Belum ada cerita.</td></tr>
+      <% } %>
+      <% stories.forEach(story => { %>
+        <tr>
+          <td><%= story.title %></td>
+          <td><%= story.category_name %></td>
+          <% if (isSuperAdmin) { %><td><%= story.admin_name || '-' %></td><% } %>
+          <td><span class="badge badge-<%= story.status %>"><%= story.status %></span></td>
+          <td><%= new Date(story.updated_at).toLocaleDateString('id-ID') %></td>
+          <td class="action-cell">
+            <a href="/admin/stories/edit/<%= story.id %>" class="btn btn-sm btn-outline">Edit</a>
+            <% if (story.status === 'draft') { %>
+              <form action="/admin/stories/publish/<%= story.id %>" method="POST" style="display:inline">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-sm btn-success">Publish</button>
+              </form>
+            <% } %>
+            <a href="/admin/stories/<%= story.id %>/export-pdf" class="btn btn-sm btn-outline">PDF</a>
+            <% if (isSuperAdmin) { %>
+              <button
+                type="button"
+                class="btn btn-sm btn-danger js-delete-story"
+                data-id="<%= story.id %>"
+                data-title="<%= story.title.replace(/"/g, '&quot;') %>"
+              >Hapus</button>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<% if (pagination.totalPages > 1) { %>
+  <nav class="pagination">
+    <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+      <a href="/admin/stories?page=<%= i %>" class="pagination-link <%= i === pagination.currentPage ? 'active' : '' %>"><%= i %></a>
+    <% } %>
+  </nav>
+<% } %>
+
+<div id="deleteModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <h3>Konfirmasi Hapus</h3>
+    <p id="deleteMessage"></p>
+    <form id="deleteForm" method="POST">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Batal</button>
+        <button type="submit" class="btn btn-danger">Hapus</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function () {
+  var modal = document.getElementById('deleteModal');
+  var deleteMessage = document.getElementById('deleteMessage');
+  var deleteForm = document.getElementById('deleteForm');
+  var cancelBtn = document.getElementById('cancelDeleteBtn');
+
+  function openDeleteModal(id, title) {
+    deleteMessage.textContent = 'Yakin ingin menghapus cerita "' + title + '"?';
+    deleteForm.action = '/admin/stories/delete/' + id;
+    modal.style.display = 'flex';
+  }
+
+  function closeDeleteModal() {
+    modal.style.display = 'none';
+  }
+
+  // Attach listeners to every "Hapus" button using data attributes
+  // instead of inline onclick — avoids breakage from special characters
+  // (quotes, etc.) in story titles.
+  document.querySelectorAll('.js-delete-story').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-id');
+      var title = btn.getAttribute('data-title');
+      openDeleteModal(id, title);
+    });
+  });
+
+  cancelBtn.addEventListener('click', closeDeleteModal);
+
+  // Close modal when clicking outside the modal content
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeDeleteModal();
+  });
+})();
+</script>

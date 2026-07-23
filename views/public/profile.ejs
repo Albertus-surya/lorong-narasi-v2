@@ -1,0 +1,28 @@
+<div class="profile-page">
+  <section class="profile-section">
+    <h2 class="section-title">Dosen Pembimbing Lapangan</h2>
+    <div class="dosen-card">
+      <img src="<%= teamData.dosen.photo %>" alt="<%= teamData.dosen.name %>" class="dosen-photo">
+      <div class="dosen-info">
+        <h3><%= teamData.dosen.name %></h3>
+        <p><%= teamData.dosen.description %></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="profile-section">
+    <h2 class="section-title">Our Team</h2>
+    <div class="team-list">
+      <% teamData.members.forEach((member, index) => { %>
+        <div class="team-member <%= index % 2 === 0 ? 'team-left' : 'team-right' %>">
+          <img src="<%= member.photo %>" alt="<%= member.name %>" class="team-photo">
+          <div class="team-info">
+            <h3><%= member.name %></h3>
+            <span class="team-role"><%= member.role %></span>
+            <p><%= member.description %></p>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+</div>

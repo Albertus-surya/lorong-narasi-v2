@@ -1,0 +1,48 @@
+<div class="search-page">
+  <header class="page-header">
+    <h1>Pencarian Cerita</h1>
+    <form action="/cari" method="GET" class="search-page-form">
+      <input type="text" name="q" value="<%= query %>" placeholder="Ketik judul atau sinopsis..." class="search-page-input" autofocus>
+      <button type="submit" class="btn btn-accent">Cari</button>
+    </form>
+  </header>
+
+  <% if (query) { %>
+    <p class="search-result-count"><%= pagination.total %> hasil untuk "<%= query %>"</p>
+
+    <% if (stories.length === 0) { %>
+      <div class="empty-state">
+        <p>Tidak ditemukan cerita yang cocok. Coba kata kunci lain.</p>
+      </div>
+    <% } else { %>
+      <div class="category-list-vertical">
+        <% stories.forEach((story, index) => { %>
+          <article class="category-story-card">
+            <img src="<%= story.image_url %>" alt="<%= story.title %>" class="category-story-img">
+            <div class="category-story-body">
+              <span class="story-card-category"><%= story.category_name %></span>
+              <h3><%= story.title %></h3>
+              <p><%= truncate(story.synopsis, 120) %></p>
+              <a href="/cerita/<%= story.slug %>" class="btn btn-accent btn-sm">Mulai Membaca</a>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+
+      <% if (pagination.totalPages > 1) { %>
+        <nav class="pagination">
+          <% if (pagination.currentPage > 1) { %>
+            <a href="/cari?q=<%= encodeURIComponent(query) %>&page=<%= pagination.currentPage - 1 %>" class="pagination-link">&laquo; Sebelumnya</a>
+          <% } %>
+          <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+            <a href="/cari?q=<%= encodeURIComponent(query) %>&page=<%= i %>"
+               class="pagination-link <%= i === pagination.currentPage ? 'active' : '' %>"><%= i %></a>
+          <% } %>
+          <% if (pagination.currentPage < pagination.totalPages) { %>
+            <a href="/cari?q=<%= encodeURIComponent(query) %>&page=<%= pagination.currentPage + 1 %>" class="pagination-link">Selanjutnya &raquo;</a>
+          <% } %>
+        </nav>
+      <% } %>
+    <% } %>
+  <% } %>
+</div>

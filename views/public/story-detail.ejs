@@ -1,0 +1,20 @@
+<article class="story-detail">
+  <header class="story-detail-header">
+    <span class="story-detail-category"><a href="/kategori/<%= story.category_slug %>"><%= story.category_name %></a></span>
+    <h1 class="story-detail-title"><%= story.title %></h1>
+    <% if (story.admin_name) { %>
+      <p class="story-detail-author">Oleh <%= story.admin_name %></p>
+    <% } %>
+  </header>
+
+  <img src="<%= story.image_url %>" alt="<%= story.title %>" class="story-detail-cover">
+
+  <% if (story.synopsis) { %>
+    <div class="story-detail-synopsis"><%= story.synopsis %></div>
+  <% } %>
+
+  <div class="story-detail-actions">
+    <a href="/cerita/<%= story.slug %>/baca" class="btn btn-accent btn-lg">Baca Sekarang</a>
+    <a href="/cerita/<%= story.slug %>/export-pdf" class="btn btn-outline">Export PDF</a>
+  </div>
+</article>

@@ -1,0 +1,42 @@
+<div class="admin-page-header">
+  <h2>Kelola Kategori</h2>
+</div>
+
+<form action="/admin/categories/create" method="POST" class="inline-form">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <input type="text" name="name" placeholder="Nama kategori baru" required maxlength="100">
+  <button type="submit" class="btn btn-accent">Tambah</button>
+</form>
+
+<div class="table-responsive">
+  <table class="admin-table">
+    <thead>
+      <tr><th>Nama</th><th>Slug</th><th>Cerita</th><th>Aksi</th></tr>
+    </thead>
+    <tbody>
+      <% categories.forEach(cat => { %>
+        <tr>
+          <td>
+            <form action="/admin/categories/edit/<%= cat.id %>" method="POST" class="inline-edit-form">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <input type="text" name="name" value="<%= cat.name %>" required>
+              <button type="submit" class="btn btn-sm btn-outline">Simpan</button>
+            </form>
+          </td>
+          <td><%= cat.slug %></td>
+          <td><%= cat.story_count %></td>
+          <td>
+            <% if (cat.story_count === 0) { %>
+              <form action="/admin/categories/delete/<%= cat.id %>" method="POST" style="display:inline" onsubmit="return confirm('Hapus kategori ini?')">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+              </form>
+            <% } else { %>
+              <span class="text-muted">Masih ada cerita</span>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

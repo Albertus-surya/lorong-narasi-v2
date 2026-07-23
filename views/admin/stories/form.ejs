@@ -1,0 +1,80 @@
+<div class="admin-page-header">
+  <h2><%= story ? 'Edit Cerita' : 'Tambah Cerita' %></h2>
+  <a href="/admin/stories" class="btn btn-outline">&larr; Kembali</a>
+</div>
+
+<form action="<%= story ? '/admin/stories/edit/' + story.id : '/admin/stories/create' %>" method="POST" enctype="multipart/form-data" class="story-form">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="title">Judul Cerita *</label>
+      <input type="text" id="title" name="title" value="<%= story ? story.title : '' %>" required maxlength="200">
+    </div>
+    <div class="form-group">
+      <label for="category_id">Kategori *</label>
+      <select id="category_id" name="category_id" required>
+        <option value="">Pilih kategori</option>
+        <% categories.forEach(cat => { %>
+          <option value="<%= cat.id %>" <%= story && story.category_id === cat.id ? 'selected' : '' %>><%= cat.name %></option>
+        <% }) %>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="synopsis">Sinopsis</label>
+    <textarea id="synopsis" name="synopsis" rows="3"><%= story ? story.synopsis || '' : '' %></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="cover_image">Cover Image (JPG/PNG, max 2MB)</label>
+    <% if (story && story.image_url) { %>
+      <img src="<%= story.image_url %>" alt="Cover" class="form-preview-img">
+    <% } %>
+    <input type="file" id="cover_image" name="cover_image" accept=".jpg,.jpeg,.png,.webp">
+  </div>
+
+  <div class="form-group">
+    <label>Sumber Konten *</label>
+    <div class="radio-group">
+      <label><input type="radio" name="content_source" value="manual" checked onchange="toggleContentSource()"> Editor Manual (CKEditor)</label>
+      <label><input type="radio" name="content_source" value="pdf" onchange="toggleContentSource()"> Upload PDF</label>
+    </div>
+  </div>
+
+  <div id="manualContent" class="form-group">
+    <label for="content">Isi Cerita</label>
+    <textarea id="content" name="content"><%= story ? story.content || '' : '' %></textarea>
+  </div>
+
+  <div id="pdfContent" class="form-group" style="display:none">
+    <label for="pdf_file">Upload PDF (max 5MB)</label>
+    <input type="file" id="pdf_file" name="pdf_file" accept=".pdf">
+    <p class="form-hint">Konten PDF akan diekstrak otomatis ke editor.</p>
+  </div>
+
+  <div class="form-group">
+    <label>Status</label>
+    <div class="radio-group">
+      <label><input type="radio" name="status" value="draft" <%= !story || story.status === 'draft' ? 'checked' : '' %>> Draft</label>
+      <label><input type="radio" name="status" value="published" <%= story && story.status === 'published' ? 'checked' : '' %>> Published</label>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-accent"><%= story ? 'Simpan Perubahan' : 'Tambah Cerita' %></button>
+</form>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+<script>
+let editor;
+ClassicEditor.create(document.querySelector('#content'), {
+  toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'blockQuote', 'insertTable', 'undo', 'redo']
+}).then(e => { editor = e; }).catch(console.error);
+
+function toggleContentSource() {
+  const source = document.querySelector('input[name="content_source"]:checked').value;
+  document.getElementById('manualContent').style.display = source === 'manual' ? 'block' : 'none';
+  document.getElementById('pdfContent').style.display = source === 'pdf' ? 'block' : 'none';
+}
+</script>

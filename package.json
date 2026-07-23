@@ -1,0 +1,30 @@
+{
+  "name": "lorong-narasi",
+  "version": "1.0.0",
+  "description": "Platform perpustakaan digital Lorong Narasi",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
+    "seed": "node database/seed.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.5.1",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express-ejs-layouts": "^2.5.1",
+    "express": "^4.21.0",
+    "express-mysql-session": "^3.0.3",
+    "express-rate-limit": "^7.4.0",
+    "express-session": "^1.18.0",
+    "express-validator": "^7.2.0",
+    "method-override": "^3.0.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.11.0",
+    "pdf-parse": "^1.1.1",
+    "pdfkit": "^0.15.0",
+    "sanitize-html": "^2.13.0"
+  }
+}

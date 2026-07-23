@@ -1,0 +1,35 @@
+<div class="category-page">
+  <header class="page-header">
+    <h1><%= category.name %></h1>
+    <p><%= pagination.total %> cerita dalam kategori ini</p>
+  </header>
+
+  <div class="category-list-vertical">
+    <% stories.forEach((story, index) => { %>
+      <article class="category-story-card">
+        <span class="story-number"><%= (pagination.currentPage - 1) * pagination.perPage + index + 1 %></span>
+        <img src="<%= story.image_url %>" alt="<%= story.title %>" class="category-story-img">
+        <div class="category-story-body">
+          <h3><%= story.title %></h3>
+          <p><%= truncate(story.synopsis, 120) %></p>
+          <a href="/cerita/<%= story.slug %>" class="btn btn-accent btn-sm">Mulai Membaca</a>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+
+  <% if (pagination.totalPages > 1) { %>
+    <nav class="pagination">
+      <% if (pagination.currentPage > 1) { %>
+        <a href="/kategori/<%= category.slug %>?page=<%= pagination.currentPage - 1 %>" class="pagination-link">&laquo; Sebelumnya</a>
+      <% } %>
+      <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+        <a href="/kategori/<%= category.slug %>?page=<%= i %>"
+           class="pagination-link <%= i === pagination.currentPage ? 'active' : '' %>"><%= i %></a>
+      <% } %>
+      <% if (pagination.currentPage < pagination.totalPages) { %>
+        <a href="/kategori/<%= category.slug %>?page=<%= pagination.currentPage + 1 %>" class="pagination-link">Selanjutnya &raquo;</a>
+      <% } %>
+    </nav>
+  <% } %>
+</div>

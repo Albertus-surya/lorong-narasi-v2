@@ -1,0 +1,106 @@
+<div class="admin-page-header">
+  <h2>Kelola Admin</h2>
+</div>
+
+<form action="/admin/users/create" method="POST" class="user-create-form">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <input type="text" name="username" placeholder="Username" required maxlength="50">
+  <input type="password" name="password" placeholder="Password" required minlength="6">
+  <input type="text" name="fullname" placeholder="Nama Lengkap" required maxlength="100">
+  <select name="role">
+    <option value="admin">Admin</option>
+    <option value="superadmin">Super Admin</option>
+  </select>
+  <button type="submit" class="btn btn-accent">Tambah Admin</button>
+</form>
+
+<div class="table-responsive">
+  <table class="admin-table">
+    <thead>
+      <tr><th>Username</th><th>Nama</th><th>Role</th><th>Dibuat</th><th>Aksi</th></tr>
+    </thead>
+    <tbody>
+      <% admins.forEach(a => { %>
+        <tr>
+          <td><%= a.username %></td>
+          <td><%= a.fullname %></td>
+          <td><span class="badge badge-<%= a.role === 'superadmin' ? 'published' : 'draft' %>"><%= a.role %></span></td>
+          <td><%= new Date(a.created_at).toLocaleDateString('id-ID') %></td>
+          <td class="action-cell">
+            <button type="button" class="btn btn-sm btn-outline" onclick="editAdmin(<%= a.id %>, '<%= a.username %>', '<%= a.fullname.replace(/'/g, "\\'") %>', '<%= a.role %>')">Edit</button>
+            <button type="button" class="btn btn-sm btn-warning" onclick="resetPassword(<%= a.id %>, '<%= a.fullname.replace(/'/g, "\\'") %>')">Reset PW</button>
+            <% if (a.id !== admin.id) { %>
+              <form action="/admin/users/delete/<%= a.id %>" method="POST" style="display:inline" onsubmit="return confirm('Hapus admin ini?')">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<div id="editModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <h3>Edit Admin</h3>
+    <form id="editForm" method="POST">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" id="editUsername" required>
+      </div>
+      <div class="form-group">
+        <label>Nama Lengkap</label>
+        <input type="text" name="fullname" id="editFullname" required>
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <select name="role" id="editRole">
+          <option value="admin">Admin</option>
+          <option value="superadmin">Super Admin</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeEditModal()">Batal</button>
+        <button type="submit" class="btn btn-accent">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="resetModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <h3>Reset Password</h3>
+    <p id="resetMessage"></p>
+    <form id="resetForm" method="POST">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="form-group">
+        <label>Password Baru</label>
+        <input type="password" name="new_password" required minlength="6">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeResetModal()">Batal</button>
+        <button type="submit" class="btn btn-accent">Reset</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function editAdmin(id, username, fullname, role) {
+  document.getElementById('editForm').action = '/admin/users/edit/' + id;
+  document.getElementById('editUsername').value = username;
+  document.getElementById('editFullname').value = fullname;
+  document.getElementById('editRole').value = role;
+  document.getElementById('editModal').style.display = 'flex';
+}
+function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+function resetPassword(id, name) {
+  document.getElementById('resetMessage').textContent = 'Reset password untuk ' + name;
+  document.getElementById('resetForm').action = '/admin/users/reset-password/' + id;
+  document.getElementById('resetModal').style.display = 'flex';
+}
+function closeResetModal() { document.getElementById('resetModal').style.display = 'none'; }
+</script>

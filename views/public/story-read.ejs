@@ -1,0 +1,22 @@
+<article class="reader-vertical-page">
+  <header class="reader-topbar">
+    <a href="/cerita/<%= story.slug %>" class="reader-back">&larr; Kembali ke Detail</a>
+    <h1 class="reader-title"><%= story.title %></h1>
+    <a href="/cerita/<%= story.slug %>/export-pdf" class="reader-pdf-link">Export PDF</a>
+  </header>
+
+  <div class="reader-container">
+    <div class="reader-content-vertical">
+      <%
+        let htmlContent = story.content || "";
+        if (!htmlContent.includes('<p>')) {
+          htmlContent = htmlContent.split('\n')
+            .filter(line => line.trim() !== '')
+            .map(line => `<p>${line.trim()}</p>`)
+            .join('');
+        }
+      %>
+      <%- htmlContent %>
+    </div>
+  </div>
+</article>

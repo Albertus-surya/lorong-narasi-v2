@@ -1,0 +1,6 @@
+node_modules/
+.env
+public/uploads/covers/*
+!public/uploads/covers/.gitkeep
+public/uploads/pdf-temp/*
+!public/uploads/pdf-temp/.gitkeep

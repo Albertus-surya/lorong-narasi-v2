@@ -1,0 +1,66 @@
+<div class="dashboard">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-number"><%= stats.storyCount %></span>
+      <span class="stat-label">Total Cerita</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number"><%= stats.publishedCount %></span>
+      <span class="stat-label">Published</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number"><%= stats.draftCount %></span>
+      <span class="stat-label">Draft</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number"><%= stats.categoryCount %></span>
+      <span class="stat-label">Kategori</span>
+    </div>
+    <% if (isSuperAdmin && stats.adminCount !== null) { %>
+    <div class="stat-card">
+      <span class="stat-number"><%= stats.adminCount %></span>
+      <span class="stat-label">Admin</span>
+    </div>
+    <% } %>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Cerita per Kategori</h3>
+      <canvas id="categoryChart"></canvas>
+    </div>
+    <% if (isSuperAdmin && monthlyStats.length) { %>
+    <div class="chart-card">
+      <h3>Cerita per Bulan</h3>
+      <canvas id="monthlyChart"></canvas>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  const catData = <%- JSON.stringify(categoryStats) %>;
+  if (catData.length) {
+    new Chart(document.getElementById('categoryChart'), {
+      type: 'bar',
+      data: {
+        labels: catData.map(c => c.name),
+        datasets: [{ label: 'Cerita', data: catData.map(c => c.story_count), backgroundColor: '#FFC72C' }]
+      },
+      options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+  }
+
+  <% if (isSuperAdmin && monthlyStats.length) { %>
+  const monthData = <%- JSON.stringify(monthlyStats) %>;
+  new Chart(document.getElementById('monthlyChart'), {
+    type: 'line',
+    data: {
+      labels: monthData.map(m => m.month),
+      datasets: [{ label: 'Cerita', data: monthData.map(m => m.count), borderColor: '#0B1E3D', backgroundColor: 'rgba(11,30,61,0.1)', fill: true }]
+    },
+    options: { responsive: true }
+  });
+  <% } %>
+</script>

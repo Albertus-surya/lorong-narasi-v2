@@ -1,0 +1,105 @@
+<div class="home-layout">
+  <aside class="home-sidebar">
+    <div class="sidebar-section">
+      <details open class="accordion">
+        <summary>Mode Tampilan</summary>
+        <div class="accordion-content">
+          <button id="theme-toggle" class="theme-toggle-btn">
+            <span class="theme-icon-light">Mode Terang</span>
+            <span class="theme-icon-dark"> Mode Gelap</span>
+          </button>
+        </div>
+      </details>
+    </div>
+
+    <div class="sidebar-section">
+      <details open class="accordion">
+        <summary>Tema / Kategori</summary>
+        <div class="accordion-content">
+          <ul class="category-list">
+            <% categories.forEach(cat => { %>
+              <li><a href="/kategori/<%= cat.slug %>"><%= cat.name %></a></li>
+            <% }) %>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <div class="sidebar-section">
+      <details open class="accordion">
+        <summary>Diagram Koleksi</summary>
+        <div class="accordion-content">
+          <canvas id="categoryChart" width="250" height="200"></canvas>
+        </div>
+      </details>
+    </div>
+  </aside>
+
+  <div class="home-main">
+    <section class="hero">
+      <div class="hero-bg" style="background-image: url('https://placehold.co/1200x400')">
+        <div class="hero-overlay">
+          <h1 class="hero-title">Selamat datang di Lorong Narasi</h1>
+          <p class="hero-subtitle">Platform perpustakaan digital untuk membaca cerita nusantara — dongeng, legenda, fabel, dan mitos dari seluruh penjuru Indonesia.</p>
+          <span class="hero-watermark">Kelurahan KEBOMAS</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Cerita Terbaru</h2>
+      <div class="story-grid">
+        <% latestStories.forEach(story => { %>
+          <article class="story-card">
+            <img src="<%= story.image_url %>" alt="<%= story.title %>" class="story-card-img">
+            <div class="story-card-body">
+              <span class="story-card-category"><%= story.category_name %></span>
+              <h3 class="story-card-title"><%= story.title %></h3>
+              <p class="story-card-synopsis"><%= truncate(story.synopsis, 100) %></p>
+              <a href="/cerita/<%= story.slug %>" class="btn btn-accent">Mulai Membaca</a>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    </section>
+
+    <% highlights.forEach(item => { %>
+      <section class="highlight-section">
+        <div class="highlight-header">
+          <h2 class="highlight-title"><%= item.category.name %></h2>
+          <a href="/kategori/<%= item.category.slug %>" class="btn btn-outline-light">Eksplor <%= item.category.name %></a>
+        </div>
+        <div class="highlight-grid">
+          <% item.stories.forEach(story => { %>
+            <article class="highlight-card">
+              <img src="<%= story.image_url %>" alt="<%= story.title %>" class="highlight-card-img">
+              <div class="highlight-card-body">
+                <h3><%= story.title %></h3>
+                <p><%= truncate(story.synopsis, 80) %></p>
+                <a href="/cerita/<%= story.slug %>" class="btn btn-accent btn-sm">Baca</a>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+    <% }) %>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  const chartData = <%- JSON.stringify(categoryCounts.map(c => ({ name: c.name, count: c.story_count }))) %>;
+  if (chartData.length && document.getElementById('categoryChart')) {
+    new Chart(document.getElementById('categoryChart'), {
+      type: 'doughnut',
+      data: {
+        labels: chartData.map(c => c.name),
+        datasets: [{
+          data: chartData.map(c => c.count),
+          backgroundColor: ['#FFC72C', '#0B1E3D', '#4A90D9', '#E74C3C', '#2ECC71']
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } } }
+    });
+  }
+</script>
