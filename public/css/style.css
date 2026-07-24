@@ -343,6 +343,8 @@ a:hover { color: var(--gold-dark); }
   overflow: hidden;
   display: flex;
   gap: 1rem;
+  /* FIX: don't let the body stretch to the image's height */
+  align-items: flex-start;
 }
 
 .highlight-card-img {
@@ -375,7 +377,10 @@ a:hover { color: var(--gold-dark); }
 
 .highlight-card-body .btn {
   align-self: flex-start;
-  margin-top: auto;
+  /* FIX: was `margin-top: auto`, which pushed the button to the
+     bottom of a stretched flex container instead of right under
+     the text, making it look like it was floating on its own. */
+  margin-top: 0.25rem;
   margin-left: 0;
 }
 
@@ -748,6 +753,12 @@ a:hover { color: var(--gold-dark); }
   .search-input { width: 100%; }
   .story-grid { grid-template-columns: 1fr; }
   .highlight-grid { grid-template-columns: 1fr; }
+  /* FIX: moved from the 480px breakpoint so cards stack into a
+     column earlier — the 481-768px range was previously left with
+     a cramped side-by-side layout that broke on mid-size phones. */
+  .highlight-card { flex-direction: column; }
+  .highlight-card-img { width: 100%; height: 160px; }
+  .highlight-card-body { padding: 0.75rem; }
   .hero-title { font-size: 1.5rem; }
   .form-row { grid-template-columns: 1fr; }
   .dosen-card { flex-direction: column; text-align: center; }
@@ -774,9 +785,7 @@ a:hover { color: var(--gold-dark); }
   .team-info { padding: 1rem; }
   .footer-top { gap: 1.5rem; padding: 0 1rem; }
   .partner-logo { width: 40px; height: 40px; min-width: 40px; }
-  .highlight-card { flex-direction: column; }
-  .highlight-card-img { width: 100%; height: 160px; }
-  .highlight-card-body { padding: 0.75rem; }
+  /* (highlight-card rules moved up to the 768px breakpoint) */
 }
 
 /* Vertical Story Reader Styles */
