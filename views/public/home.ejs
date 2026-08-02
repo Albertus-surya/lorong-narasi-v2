@@ -25,14 +25,6 @@
       </details>
     </div>
 
-    <div class="sidebar-section">
-      <details open class="accordion">
-        <summary>Diagram Koleksi</summary>
-        <div class="accordion-content">
-          <canvas id="categoryChart" width="250" height="200"></canvas>
-        </div>
-      </details>
-    </div>
   </aside>
 
   <div class="home-main">
@@ -85,21 +77,3 @@
     <% }) %>
   </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script>
-  const chartData = <%- JSON.stringify(categoryCounts.map(c => ({ name: c.name, count: c.story_count }))) %>;
-  if (chartData.length && document.getElementById('categoryChart')) {
-    new Chart(document.getElementById('categoryChart'), {
-      type: 'doughnut',
-      data: {
-        labels: chartData.map(c => c.name),
-        datasets: [{
-          data: chartData.map(c => c.count),
-          backgroundColor: ['#FFC72C', '#0B1E3D', '#4A90D9', '#E74C3C', '#2ECC71']
-        }]
-      },
-      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } } }
-    });
-  }
-</script>
