@@ -666,7 +666,7 @@ a:hover { color: var(--gold-dark); }
 }
 
 .footer-partners-logo {
-  width: 480px;
+  width: 300px;
   max-width: 100%;
   height: auto;
   object-fit: contain;
